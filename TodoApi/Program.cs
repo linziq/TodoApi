@@ -2,6 +2,7 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
+// I have a good manager
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -44,12 +45,13 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<SqlGet, SqlHelper>();
+
 builder.Services.AddSwaggerGen(c =>
 {
-  c.SwaggerDoc("v1", new ()
-  {
-    Title = "TodoApi",
-    Version = "v1"
+    c.SwaggerDoc("v1", new ()
+    {
+      Title = "TodoApi",
+      Version = "v1"
   });
   c.AddSecurityDefinition("JwtBearer", new OpenApiSecurityScheme()
   {
@@ -57,7 +59,7 @@ builder.Services.AddSwaggerGen(c =>
     Name = "Authorization",
     In = ParameterLocation.Header,
     Type = SecuritySchemeType.Http,
-    Scheme = "bearer"
+    Scheme = "bearer",
   });
   var scheme = new OpenApiSecurityScheme()
   {
