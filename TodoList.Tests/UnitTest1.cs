@@ -1,5 +1,6 @@
 namespace TodoList.Tests
 {
+    using Microsoft.AspNetCore.Http;
     using Microsoft.EntityFrameworkCore;
     using TodoApi.Context;
     using TodoApi.Models;
@@ -7,11 +8,6 @@ namespace TodoList.Tests
 
     public class Tests
     {
-        [SetUp]
-        public void Setup()
-        {
-        }
-
         [Test] // Get方法
         public void Shuould_Return_All_Itemss_ById()
         {
@@ -29,7 +25,7 @@ namespace TodoList.Tests
                 AddDate = DateTime.Now,
                 IsDone = true,
                 UserID = 1,
-                Title = "sss1",
+                Title = "test",
             });
             context.TodoListItems.Add(new TodoListItem
             {
@@ -47,8 +43,7 @@ namespace TodoList.Tests
             var results = sqlHelper.GetUserId(1);
 
             Assert.That(results.Count(), Is.EqualTo(1));
-            Assert.That(results.ToList()[0].Title, Is.EqualTo("sss1"));
-          //  Assert.IsTrue(results.ToList()[0].Title == "sss1");
+            Assert.That(results.ToList()[0].Title, Is.EqualTo("test"));
         }
 
         [Test] // post方法
@@ -110,13 +105,23 @@ namespace TodoList.Tests
 
             using var context = new TodoContext(optins);
 
+            context.TodoListItems.Add(new TodoListItem
+            {
+                OrdersId = 2,
+                AddDate = DateTime.Now,
+                IsDone = true,
+                UserID = 2,
+                Title = "test",
+            });
+            context.SaveChanges();
+
             SqlHelper sqlHelper = new SqlHelper(context);
 
-            var results = sqlHelper.DeleteItemsByTitle(2, "sad");
+            var methods = sqlHelper.DeleteItemsByTitle(2, "test");
 
-            var actresults = sqlHelper.GetUserId(2);
+            var results = sqlHelper.GetUserId(2);
 
-            Assert.GreaterOrEqual(actresults.Count(), 0);
+            Assert.GreaterOrEqual(results.Count(), 0);  
         }
     }
 }
