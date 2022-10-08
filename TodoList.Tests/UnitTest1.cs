@@ -8,10 +8,10 @@ namespace TodoList.Tests
 
     public class Tests
     {
-        [Test] // Get方法
+        [Test] // Get
         public void Shuould_Return_All_Itemss_ById()
         {
-            // 使用内存数据库
+          
             var optins = new DbContextOptionsBuilder<TodoContext>()
                 .UseInMemoryDatabase(databaseName: "TodolistItems")
                 .Options;
@@ -72,6 +72,7 @@ namespace TodoList.Tests
         }
 
         [Test] // put 方法
+
         public void Put_ByTitle()
         {
             var optins = new DbContextOptionsBuilder<TodoContext>()
