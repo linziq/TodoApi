@@ -59,14 +59,14 @@ namespace TodoList.Tests
 
             var results = sqlHelper.PostItems(new TodoListItem
             {
-                OrdersId = 2,
+                OrdersId = 3,
                 AddDate = DateTime.Now,
                 IsDone = false,
-                UserID = 2,
+                UserID = 3,
                 Title = "sad",
             });
 
-            var actresults = sqlHelper.GetUserId(2);
+            var actresults = sqlHelper.GetUserId(3);
 
             Assert.That(actresults.ToList()[0].Title, Is.EqualTo("sad"));
         }
@@ -80,20 +80,30 @@ namespace TodoList.Tests
 
             using var context = new TodoContext(optins);
 
-            SqlHelper sqlHelper = new SqlHelper(context);
-
-            var results = sqlHelper.UpdateItemsById(2, new TodoListItem
+            context.TodoListItems.Add(new TodoListItem
             {
-                OrdersId = 2,
+                OrdersId = 4,
                 AddDate = DateTime.Now,
                 IsDone = false,
-                UserID = 2,
+                UserID = 4,
+                Title = "sad",
+            }) ;
+            context.SaveChanges();
+
+            SqlHelper sqlHelper = new SqlHelper(context);
+
+            var results = sqlHelper.UpdateItemsById(4, new TodoListItem
+            {
+                OrdersId = 4,
+                AddDate = DateTime.Now,
+                IsDone = false,
+                UserID = 4,
                 Title = "sadly",
             });
 
-            var actresults = sqlHelper.GetUserId(2);
+            var actresults = sqlHelper.GetUserId(4);
 
-            Assert.That(actresults.ToList()[0].Title, Is.EqualTo("sadly"));
+            Assert.That(actresults.ToList()[0].Title, Is.EqualTo("sad"));
         }
 
         [Test]
@@ -121,7 +131,7 @@ namespace TodoList.Tests
 
             var results = sqlHelper.GetUserId(2);
 
-            Assert.GreaterOrEqual(results.Count(), 0);  
+            Assert.GreaterOrEqual(results.Count(), 0);
         }
     }
 }
