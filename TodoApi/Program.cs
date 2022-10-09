@@ -1,8 +1,3 @@
-// <copyright file="Program.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
-// I have a good manager
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -51,7 +46,7 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new ()
     {
       Title = "TodoApi",
-      Version = "v1"
+        Version = "v1",
   });
   c.AddSecurityDefinition("JwtBearer", new OpenApiSecurityScheme()
   {

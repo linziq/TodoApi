@@ -1,11 +1,8 @@
-﻿// <copyright file="TodoitemsController.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-
-namespace TodoApi.Controllers
+﻿namespace TodoApi.Controllers
 {
     using System;
     using System.Linq;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
@@ -23,6 +20,8 @@ namespace TodoApi.Controllers
         {
             this.sqlGet = sqlGet;
         }
+        
+        //   var identity = HttpContext.User.Identity as ClaimsIdentity;
 
         [HttpGet]
         public IQueryable<TodoListItem> GetTodoListItems()

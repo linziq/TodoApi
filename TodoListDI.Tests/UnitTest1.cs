@@ -5,7 +5,6 @@ namespace TodoListDI.Tests
     using TodoApi.Context;
     using TodoApi.Models;
     using TodoApi.Services;
-    
 
     public class UnitTest1
     {
@@ -17,9 +16,14 @@ namespace TodoListDI.Tests
               .UseInMemoryDatabase(databaseName: "TodolistItems")
               .Options;
 
-            // 替代了链接SQL数据库，使用内存数据库模拟
             _todoContext = new TodoContext(optins);
 
+            _sqlHelper = new SqlHelper(_todoContext);
+        }
+
+        [Fact]
+        public void GetItem_ByUserID()
+        {
             // 添加一条UserId为1，title为Test的数据
             _todoContext.TodoListItems.Add(new TodoListItem
             {
@@ -36,34 +40,30 @@ namespace TodoListDI.Tests
                 OrdersId = 2,
                 AddDate = DateTime.Now,
                 IsDone = false,
-                UserID = 1,
+                UserID = 2,
                 Title = "friday",
             });
 
             _todoContext.SaveChanges();
 
-            _sqlHelper = new SqlHelper(_todoContext);
-        }
-        [Fact]
-        public void GetItem_ByUserID()
-        {
             var results = _sqlHelper.GetUserId(1);
 
             Assert.Equal("test", results.ToList()[0].Title);
         }
+
         [Fact] // Post 
-        public void PostItem_ByUserID()
+        public void PostItem_By_UserID_Items()
         {
             var results = _sqlHelper.PostItems(new TodoListItem
             {
                 OrdersId = 3,
                 AddDate = DateTime.Now,
                 IsDone = false,
-                UserID = 2,
+                UserID = 3,
                 Title = "sad",
             });
 
-            var actresults = _sqlHelper.GetUserId(2);
+            var actresults = _sqlHelper.GetUserId(3);
 
             Assert.Equal("sad", actresults.ToList()[0].Title);
         }
@@ -71,9 +71,9 @@ namespace TodoListDI.Tests
         [Fact] //Put
         public void PutItem_ByOrdersID()
         {
-            var result = _sqlHelper.UpdateItemsById(2, new TodoListItem
+            var result = _sqlHelper.UpdateItemsById(1, new TodoListItem
             {
-                OrdersId = 2,
+                OrdersId = 1,
                 AddDate = DateTime.Now,
                 IsDone = false,
                 UserID = 1,
@@ -82,13 +82,14 @@ namespace TodoListDI.Tests
 
             var actresult = _sqlHelper.GetUserId(1);
 
-            Assert.Equal("happy", actresult.ToList()[1].Title);
+            Assert.Equal("happy", actresult.ToList()[0].Title);
+           
         }
 
-        [Fact]
-        public void Delete_ByTitle()
+        [Fact] // Delect
+        public void Delete_By_UserID_Title()
         {
-            var methods = _sqlHelper.DeleteItemsByTitle(2, "sad");
+            var methods = _sqlHelper.DeleteItemsByTitle(2, "friday");
 
             var results = _sqlHelper.GetUserId(2);
 

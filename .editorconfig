@@ -76,3 +76,6 @@ dotnet_style_prefer_auto_properties = true:silent
 
 # SA1600: Elements should be documented
 dotnet_diagnostic.SA1600.severity = none
+
+# Default severity for all analyzer diagnostics
+dotnet_analyzer_diagnostic.severity = none
