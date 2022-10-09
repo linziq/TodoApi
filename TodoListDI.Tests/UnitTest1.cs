@@ -9,7 +9,7 @@ namespace TodoListDI.Tests
     public class UnitTest1
     {
         private readonly TodoContext _todoContext;
-        private readonly SqlHelper _sqlHelper;
+        private readonly TodoServices _TodoServices;
         public UnitTest1()
         {
             var optins = new DbContextOptionsBuilder<TodoContext>()
@@ -18,7 +18,7 @@ namespace TodoListDI.Tests
 
             _todoContext = new TodoContext(optins);
 
-            _sqlHelper = new SqlHelper(_todoContext);
+            _TodoServices = new TodoServices(_todoContext);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace TodoListDI.Tests
 
             _todoContext.SaveChanges();
 
-            var results = _sqlHelper.GetUserId(1);
+            var results = _TodoServices.GetItemsByUserId(1);
 
             Assert.Equal("test", results.ToList()[0].Title);
         }
@@ -54,7 +54,7 @@ namespace TodoListDI.Tests
         [Fact] // Post 
         public void PostItem_By_UserID_Items()
         {
-            var results = _sqlHelper.PostItems(new TodoListItem
+            var results = _TodoServices.PostItems(new TodoListItem
             {
                 OrdersId = 3,
                 AddDate = DateTime.Now,
@@ -63,7 +63,7 @@ namespace TodoListDI.Tests
                 Title = "sad",
             });
 
-            var actresults = _sqlHelper.GetUserId(3);
+            var actresults = _TodoServices.GetItemsByUserId(3);
 
             Assert.Equal("sad", actresults.ToList()[0].Title);
         }
@@ -71,7 +71,7 @@ namespace TodoListDI.Tests
         [Fact] //Put
         public void PutItem_ByOrdersID()
         {
-            var result = _sqlHelper.UpdateItemsById(1, new TodoListItem
+            var result = _TodoServices.UpdateItemsById(1, new TodoListItem
             {
                 OrdersId = 1,
                 AddDate = DateTime.Now,
@@ -80,7 +80,7 @@ namespace TodoListDI.Tests
                 Title = "happy",
             });
 
-            var actresult = _sqlHelper.GetUserId(1);
+            var actresult = _TodoServices.GetItemsByUserId(1);
 
             Assert.Equal("happy", actresult.ToList()[0].Title);
            
@@ -89,9 +89,9 @@ namespace TodoListDI.Tests
         [Fact] // Delect
         public void Delete_By_UserID_Title()
         {
-            var methods = _sqlHelper.DeleteItemsByTitle(2, "friday");
+            var methods = _TodoServices.DeleteItemsByTitle(2, "friday");
 
-            var results = _sqlHelper.GetUserId(2);
+            var results = _TodoServices.GetItemsByUserId(2);
 
             Assert.Equal(0, results.Count());
         }

@@ -14,11 +14,11 @@
     [ApiController]
     public class TodoitemsController : ControllerBase
     {
-        private readonly SqlGet sqlGet;
+        private readonly ITodoServices _ITodoServices;
 
-        public TodoitemsController(SqlGet sqlGet) // 构造函数注入接口
+        public TodoitemsController(ITodoServices IToddoServices) // 构造函数注入接口
         {
-            this.sqlGet = sqlGet;
+            _ITodoServices = IToddoServices;
         }
         
         //   var identity = HttpContext.User.Identity as ClaimsIdentity;
@@ -27,7 +27,7 @@
         public IQueryable<TodoListItem> GetTodoListItems()
         {
             int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
-            return sqlGet.GetUserId(userId);
+            return _ITodoServices.GetItemsByUserId(userId);
         }
 
         [HttpPost] // 添加
@@ -35,7 +35,7 @@
         {
             int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
             todoitem.UserID = userId;
-            return await sqlGet.PostItems(todoitem);
+            return await _ITodoServices.PostItems(todoitem);
         }
 
         [HttpPut] // 修改
@@ -44,7 +44,7 @@
         {
             int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
             todoitem.UserID = userId;
-            await sqlGet.UpdateItemsById(id, todoitem);
+            await _ITodoServices.UpdateItemsById(id, todoitem);
             return Ok(id);
         }
 
@@ -53,7 +53,7 @@
         {
             int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
 
-            var result = await sqlGet.DeleteItemsByTitle(userId, tiele);
+            var result = await _ITodoServices.DeleteItemsByTitle(userId, tiele);
             if (result == null)
             {
                 return NotFound("请输入正确的值");

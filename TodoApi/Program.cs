@@ -39,7 +39,7 @@ builder.Services.AddAuthentication(options =>
   };
 });
 
-builder.Services.AddScoped<SqlGet, SqlHelper>();
+builder.Services.AddScoped<ITodoServices, TodoServices>();
 
 builder.Services.AddSwaggerGen(c =>
 {

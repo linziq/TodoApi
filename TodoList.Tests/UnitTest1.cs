@@ -38,9 +38,9 @@ namespace TodoList.Tests
             context.SaveChanges();
 
             // mock service
-            SqlHelper sqlHelper = new SqlHelper(context);
+            TodoServices TodoServices = new TodoServices(context);
 
-            var results = sqlHelper.GetUserId(1);
+            var results = TodoServices.GetItemsByUserId(1);
 
             Assert.That(results.Count(), Is.EqualTo(1));
             Assert.That(results.ToList()[0].Title, Is.EqualTo("test"));
@@ -55,9 +55,9 @@ namespace TodoList.Tests
 
             using var context = new TodoContext(optins);
 
-            SqlHelper sqlHelper = new SqlHelper(context);
+            TodoServices TodoServices = new TodoServices(context);
 
-            var results = sqlHelper.PostItems(new TodoListItem
+            var results = TodoServices.PostItems(new TodoListItem
             {
                 OrdersId = 3,
                 AddDate = DateTime.Now,
@@ -66,7 +66,7 @@ namespace TodoList.Tests
                 Title = "sad",
             });
 
-            var actresults = sqlHelper.GetUserId(3);
+            var actresults = TodoServices.GetItemsByUserId(3);
 
             Assert.That(actresults.ToList()[0].Title, Is.EqualTo("sad"));
         }
@@ -90,9 +90,9 @@ namespace TodoList.Tests
             }) ;
             context.SaveChanges();
 
-            SqlHelper sqlHelper = new SqlHelper(context);
+            TodoServices TodoServices = new TodoServices(context);
 
-            var results = sqlHelper.UpdateItemsById(4, new TodoListItem
+            var results = TodoServices.UpdateItemsById(4, new TodoListItem
             {
                 OrdersId = 4,
                 AddDate = DateTime.Now,
@@ -101,7 +101,7 @@ namespace TodoList.Tests
                 Title = "sadly",
             });
 
-            var actresults = sqlHelper.GetUserId(4);
+            var actresults = TodoServices.GetItemsByUserId(4);
 
             Assert.That(actresults.ToList()[0].Title, Is.EqualTo("sad"));
         }
@@ -125,11 +125,11 @@ namespace TodoList.Tests
             });
             context.SaveChanges();
 
-            SqlHelper sqlHelper = new SqlHelper(context);
+            TodoServices TodoServices = new TodoServices(context);
 
-            var methods = sqlHelper.DeleteItemsByTitle(2, "test");
+            var methods = TodoServices.DeleteItemsByTitle(2, "test");
 
-            var results = sqlHelper.GetUserId(2);
+            var results = TodoServices.GetItemsByUserId(2);
 
             Assert.GreaterOrEqual(results.Count(), 0);
         }
