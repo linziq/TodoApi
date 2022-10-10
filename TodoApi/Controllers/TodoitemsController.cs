@@ -25,26 +25,28 @@
         [HttpGet]
         public IQueryable<TodoListItem> GetTodoListItems()
         {
-            int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
+            // HttpContext.User.Claims  Claim 是这些声明对象的列表(以list的方式表现)。       Request
+            // int identityID = Convert.ToInt32(User.Claims.ToList()[2].Value); // 对应type =="UserId",但申明通常被认为无序，应该按类型
+            int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value); // HttpContext.User
             return _ITodoServices.GetItemsByUserId(userId);
         }
 
-        [HttpPost] // 添加
+        [HttpPost] // 添加 
         public async Task<ActionResult<TodoListItem>> PostTodoitem(TodoListItem todoitem) // 更新PostTodoitem create方法
         {
             int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
             todoitem.UserID = userId;
-            return await _ITodoServices.PostItems(todoitem);
+            await _ITodoServices.PostItems(todoitem);
+            return Ok("添加成功");
         }
 
         [HttpPut] // 修改
-
         public async Task<IActionResult> PutTodoitem(int id, TodoListItem todoitem)
         {
             int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
             todoitem.UserID = userId;
             await _ITodoServices.UpdateItemsById(id, todoitem);
-            return Ok(id);
+            return Ok("修改成功");
         }
 
         [HttpDelete]
@@ -61,6 +63,13 @@
             {
                 return Ok("已成功删除");
             }
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("GetAllTable")]
+        public async Task<ActionResult<IEnumerable<TodoListItem>>> GetItemsAll()
+        {
+            return await _ITodoServices.GetItems();
         }
     }
 }

@@ -53,5 +53,9 @@ namespace TodoApi.Services
 #pragma warning restore CS8603 // Possible null reference return.
         }
 
+        public async Task<ActionResult<IEnumerable<TodoListItem>>> GetItems()
+        {
+            return await context.TodoListItems.ToListAsync(); 
+        }
     }
 }

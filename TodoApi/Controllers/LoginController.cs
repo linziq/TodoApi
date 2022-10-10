@@ -34,19 +34,19 @@ namespace TodoApi.Controllers
             foreach (var item in userItem)
             {
                 if (model.Username == item.UserName && model.Password == item.PassWord)
-                {
-                    int id = item.Id;
+                {                   
                     var authClaims = new List<Claim>
                    {
                     new Claim(ClaimTypes.Role, item.Permission!.ToString().Trim()),
-                    new Claim("UserName", Guid.NewGuid().ToString()),
-                    new Claim("UserId", id.ToString()),
+                     //new Claim("Role", item.Permission!.ToString().Trim()),
+                    new Claim("UserName",item.UserName!.ToString()),
+                    new Claim("UserId", item.Id.ToString()),
                    };
                     var token = GetToken(authClaims);
                     return Ok(new
                     {
                         token = new JwtSecurityTokenHandler().WriteToken(token),
-                        expiration = token.ValidTo,
+                        ExpirationTime = token.ValidTo,
                     });
                 }
             }
@@ -62,10 +62,9 @@ namespace TodoApi.Controllers
             var token = new JwtSecurityToken(
                 issuer: this.configuration["JWT:ValidIssuer"], // 签名地址
                 audience: this.configuration["JWT:ValidAudience"], // 受众
-                expires: DateTime.Now.AddHours(300), // 过期时间
+                expires: DateTime.Now.AddHours(30), // 过期时间
                 claims: authClaims, // 头部带的参数
                 signingCredentials: new SigningCredentials(authScereKey, SecurityAlgorithms.HmacSha256)); // 签名证书
-
             return token;
         }
     }
