@@ -24,8 +24,10 @@ namespace TodoListDI.Tests
         [Fact] // get
         public void GetItem_ByUserID()
         {
+           var dbContext =  GetDbContext();
+
             // 添加一条UserId为1，title为Test的数据
-            _todoContext.TodoListItems.Add(new TodoListItem
+            dbContext.TodoListItems.Add(new TodoListItem
             {
                 OrdersId = 1,
                 AddDate = DateTime.Now,
@@ -51,10 +53,18 @@ namespace TodoListDI.Tests
             Assert.Equal("test", results.ToList()[0].Title);
         }
 
-        [Fact] // Post 
-        public void PostItem_By_UserID_Items()
+        private TodoContext GetDbContext()
         {
-            var results = _TodoServices.PostItems(new TodoListItem
+            var optins = new DbContextOptionsBuilder<TodoContext>()
+             .UseInMemoryDatabase(databaseName: "TodolistItems")
+             .Options;
+           return new TodoContext(optins);
+        }
+
+        [Fact] // Post 
+        public void CreateItem_By_UserID_Items()
+        {
+            var results = _TodoServices.CreateItems(new TodoListItem
             {
                 OrdersId = 3,
                 AddDate = DateTime.Now,
@@ -88,7 +98,7 @@ namespace TodoListDI.Tests
         [Fact] // Delect
         public void Delete_By_UserID_Title()
         {
-            var methods = _TodoServices.DeleteItemsByTitle(2, "friday");
+            var methods = _TodoServices.DeleteItemsByTitle(2,1);
 
             var results = _TodoServices.GetItemsByUserId(2);
 

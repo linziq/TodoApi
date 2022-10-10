@@ -14,48 +14,46 @@ namespace TodoApi.Services
             context = todoContext;
         }
 
-        public IQueryable<TodoListItem> GetItemsByUserId(int id)  // 实现查询
+        public IEnumerable<TodoListItem> GetItemsByUserId(int id)  // 实现查询
         {
-            return context.TodoListItems.Where(x => x.UserID == id);
-        }
+            var item = context.TodoListItems.Where(x => x.UserID == id);
+            if (item == null)
+            {
+                throw new Exception();
+            }
 
-        public async Task<ActionResult<TodoListItem>> PostItems(TodoListItem item) //实现增加数据
-        {
-            context.TodoListItems.Add(item);
-            await context.SaveChangesAsync();
             return item;
         }
 
-        public async Task<ActionResult<TodoListItem>> UpdateItemsById(int id, TodoListItem item)  // 实现修改数据
+        public async Task<int> CreateItems(TodoListItem item) //实现增加数据
+        {
+            context.TodoListItems.Add(item);
+            await context.SaveChangesAsync();
+            return item.OrdersId;
+        }
+
+        public async Task UpdateItemsById(int id, TodoListItem item)  // 实现修改数据
         {
             item.OrdersId = id;
             context.TodoListItems.Update(item);
             EntityState state = context.Entry(item).State;
             await context.SaveChangesAsync();
-            return item;
+            return ;
         }
 
-        public async Task<ActionResult<TodoListItem>> DeleteItemsByTitle(int userId, string title)  //实现删除数据
-        {
-            var list = await context.TodoListItems.Where(x => x.UserID == userId).ToListAsync();
-            foreach (TodoListItem item in list)
-            {
-                if (item.Title == title)
-                {
-                    context.TodoListItems.Remove(item);
+        public async Task DeleteItemsByTitle(int userId, int OrdersId)  //实现删除数据
+        {  
+              var list=await context.TodoListItems.Where(x=>x.OrdersId==OrdersId).ToListAsync();
+                    context.TodoListItems.Remove(list);
                     await context.SaveChangesAsync();
-                    return item;
-                }
-            }
+                    return ;
+            
 
-#pragma warning disable CS8603 // Possible null reference return.
-            return null;
-#pragma warning restore CS8603 // Possible null reference return.
         }
 
-        public async Task<ActionResult<IEnumerable<TodoListItem>>> GetItems()
+        public async Task<IEnumerable<TodoListItem>> GetItems()
         {
-            return await context.TodoListItems.ToListAsync(); 
+            return await context.TodoListItems.ToListAsync();
         }
     }
 }
