@@ -3,7 +3,7 @@ using TodoApi.Models;
 
 namespace TodoApi.Services
 {
-    public interface ITodoServices
+    public interface ITodoServices  //  TodoService的接口
     {
         IQueryable<TodoListItem> GetItemsByUserId(int id); // 根据UserID进行Get
         Task<ActionResult<TodoListItem>> PostItems(TodoListItem item); // Post一项新的数据

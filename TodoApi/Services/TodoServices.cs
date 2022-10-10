@@ -21,7 +21,7 @@ namespace TodoApi.Services
 
         public async Task<ActionResult<TodoListItem>> PostItems(TodoListItem item) //实现增加数据
         {
-            context.TodoListItems.Add(item); 
+            context.TodoListItems.Add(item);
             await context.SaveChangesAsync();
             return item;
         }
@@ -31,7 +31,7 @@ namespace TodoApi.Services
             item.OrdersId = id;
             context.TodoListItems.Update(item);
             EntityState state = context.Entry(item).State;
-            await context.SaveChangesAsync();  
+            await context.SaveChangesAsync();
             return item;
         }
 

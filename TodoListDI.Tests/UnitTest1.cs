@@ -34,7 +34,7 @@ namespace TodoListDI.Tests
                 Title = "test",
             });
 
-            // 添加一条UserId为1，title为Friday的数据
+            // 添加一条UserId为2，title为Friday的数据
             _todoContext.TodoListItems.Add(new TodoListItem
             {
                 OrdersId = 2,
@@ -71,19 +71,18 @@ namespace TodoListDI.Tests
         [Fact] //Put
         public void PutItem_ByOrdersID()
         {
-            var result = _TodoServices.UpdateItemsById(1, new TodoListItem
+            var result = _TodoServices.UpdateItemsById(3, new TodoListItem
             {
-                OrdersId = 1,
                 AddDate = DateTime.Now,
                 IsDone = false,
-                UserID = 1,
+                UserID = 3,
                 Title = "happy",
             });
 
-            var actresult = _TodoServices.GetItemsByUserId(1);
+            var actresult = _TodoServices.GetItemsByUserId(3);
 
             Assert.Equal("happy", actresult.ToList()[0].Title);
-           
+
         }
 
         [Fact] // Delect
