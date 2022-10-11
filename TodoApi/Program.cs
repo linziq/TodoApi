@@ -40,12 +40,11 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddControllers()
-    .AddNewtonsoftJson(options =>
-    {
-        options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss"; // 格式化时间
-    });
-
+//builder.Services.AddControllers()
+//    .AddNewtonsoftJson(options =>
+//    {
+//        options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss"; // 格式化时间
+//    });
 
 builder.Services.AddScoped<ITodoServices, TodoServices>();
 

@@ -6,9 +6,9 @@
     using System.Text.Json.Serialization;
     public class TodoListItem
     {
-        [JsonIgnore]
         [Key]
-        public int OrdersId { get; set; }
+        [JsonIgnore]
+        public int PrimaryID { get; set; }
 
         public DateTime AddDate { get; set; }
 

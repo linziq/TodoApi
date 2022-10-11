@@ -19,16 +19,14 @@
         {
             _ITodoServices = IToddoServices;
         }
-
         //   var identity = HttpContext.User.Identity as ClaimsIdentity;
-
         [HttpGet]
         public IQueryable<TodoListItem> GetTodoListItems()
         {
             // HttpContext.User.Claims  Claim 是这些声明对象的列表(以list的方式表现)。       Request
             // int identityID = Convert.ToInt32(User.Claims.ToList()[2].Value); // 对应type =="UserId",但申明通常被认为无序，应该按类型
             int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value); // HttpContext.User
-            var result= (IQueryable<TodoListItem>)_ITodoServices.GetItemsByUserId(userId);
+            var result = (IQueryable<TodoListItem>)_ITodoServices.GetItemsByUserId(userId);
             return result;
         }
 
@@ -42,28 +40,18 @@
         }
 
         [HttpPut] // 修改
-        public async Task<IActionResult> PutTodoitem(int id, TodoListItem todoitem)
+        public async Task<IActionResult> PutTodoitem(int PrimaryID, TodoListItem todoitem)
         {
             int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
             todoitem.UserID = userId;
-            await _ITodoServices.UpdateItemsById(id, todoitem);
+            await _ITodoServices.UpdateItemsById(PrimaryID, todoitem);
             return Ok("修改成功");
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Deleteitem(int OrderID)
+        public async Task<IActionResult> Deleteitem(int PrimaryID)
         {
-            int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value);
-
-             await _ITodoServices.DeleteItemsByTitle(userId, OrderID);
-            //if (result == null)
-            //{
-            //    return NotFound("请输入正确的值");
-            //}
-            //else
-            //{
-            //    return Ok("已成功删除");
-            //}
+            await _ITodoServices.DeleteItemsByPrimaryID(PrimaryID);
             return Ok("已成功删除");
         }
 
@@ -71,7 +59,7 @@
         [HttpGet("GetAllTable")]
         public async Task<ActionResult<IEnumerable<TodoListItem>>> GetItemsAll()
         {
-          var result=   await _ITodoServices.GetItems();
+            var result = await _ITodoServices.GetItems();
             return result.ToList();
         }
     }

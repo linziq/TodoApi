@@ -2,107 +2,110 @@ namespace TodoListDI.Tests
 {
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Internal;
     using TodoApi.Context;
     using TodoApi.Models;
     using TodoApi.Services;
 
     public class UnitTest1
     {
-        private readonly TodoContext _todoContext;
-        private readonly TodoServices _TodoServices;
-        public UnitTest1()
-        {
-            var optins = new DbContextOptionsBuilder<TodoContext>()
-              .UseInMemoryDatabase(databaseName: "TodolistItems")
-              .Options;
-
-            _todoContext = new TodoContext(optins);
-
-            _TodoServices = new TodoServices(_todoContext);
-        }
-
         [Fact] // get
         public void GetItem_ByUserID()
         {
-           var dbContext =  GetDbContext();
-
+            var dbContext = GetDbContext();
             // 添加一条UserId为1，title为Test的数据
             dbContext.TodoListItems.Add(new TodoListItem
             {
-                OrdersId = 1,
+                PrimaryID = 1,
                 AddDate = DateTime.Now,
                 IsDone = true,
                 UserID = 1,
                 Title = "test",
             });
+            dbContext.SaveChanges();
 
-            // 添加一条UserId为2，title为Friday的数据
-            _todoContext.TodoListItems.Add(new TodoListItem
-            {
-                OrdersId = 2,
-                AddDate = DateTime.Now,
-                IsDone = false,
-                UserID = 2,
-                Title = "friday",
-            });
-
-            _todoContext.SaveChanges();
-
-            var results = _TodoServices.GetItemsByUserId(1);
+            TodoServices services = new TodoServices(dbContext);
+            var results = services.GetItemsByUserId(1);
 
             Assert.Equal("test", results.ToList()[0].Title);
-        }
-
-        private TodoContext GetDbContext()
-        {
-            var optins = new DbContextOptionsBuilder<TodoContext>()
-             .UseInMemoryDatabase(databaseName: "TodolistItems")
-             .Options;
-           return new TodoContext(optins);
         }
 
         [Fact] // Post 
         public void CreateItem_By_UserID_Items()
         {
-            var results = _TodoServices.CreateItems(new TodoListItem
+            var dbContext = GetDbContext();
+            TodoServices services = new TodoServices(dbContext);
+
+            var results = services.CreateItems(new TodoListItem
             {
-                OrdersId = 3,
+                PrimaryID = 2,
                 AddDate = DateTime.Now,
                 IsDone = false,
-                UserID = 3,
-                Title = "sad",
+                UserID = 2,
+                Title = "happy",
             });
+            var actresults = services.GetItemsByUserId(2);
 
-            var actresults = _TodoServices.GetItemsByUserId(3);
-
-            Assert.Equal("sad", actresults.ToList()[0].Title);
+            Assert.Equal("happy", actresults.ToList()[0].Title);
         }
 
         [Fact] //Put
-        public void PutItem_ByOrdersID()
+        public  void PutItem_ByPrimaryID()
         {
-            var result = _TodoServices.UpdateItemsById(3, new TodoListItem
+            var dbContext = GetDbContext();
+            dbContext.TodoListItems.Add(new TodoListItem
             {
+                PrimaryID = 3,
                 AddDate = DateTime.Now,
                 IsDone = false,
                 UserID = 3,
-                Title = "happy",
+                Title = "cloudy",
             });
+            dbContext.SaveChanges();
+            TodoServices services = new TodoServices(dbContext);
 
-            var actresult = _TodoServices.GetItemsByUserId(3);
+            var method = services.UpdateItemsById(3, new TodoListItem
+            {
+           
+                AddDate = DateTime.UtcNow,
+                IsDone = true,
+                UserID = 3,
+                Title = "string",
+            });
+            var actresult = services.GetItemsByUserId(3);
 
-            Assert.Equal("happy", actresult.ToList()[0].Title);
+            Assert.Equal("string", actresult.ToList()[0].Title);
 
         }
 
         [Fact] // Delect
-        public void Delete_By_UserID_Title()
+        public async void Delete_By_UserID_Title()
         {
-            var methods = _TodoServices.DeleteItemsByTitle(2,1);
+            var dbContext = GetDbContext();
+            dbContext.TodoListItems.Add(new TodoListItem
+            {
+                PrimaryID = 4,
+                AddDate = DateTime.Now,
+                IsDone = false,
+                UserID = 4,
+                Title = "Wednesday",
+            });
+            dbContext.SaveChanges();
+            TodoServices services = new TodoServices(dbContext);
 
-            var results = _TodoServices.GetItemsByUserId(2);
+            await  services.DeleteItemsByPrimaryID(4);
+            var results = services.GetItemsByUserId(4);
 
             Assert.Equal(0, results.Count());
+        }
+
+
+        private TodoContext GetDbContext()
+        {
+            var optins = new DbContextOptionsBuilder<TodoContext>()
+             .UseInMemoryDatabase(databaseName: "Testdb")
+             .Options;
+            return new TodoContext(optins);
         }
     }
 }
