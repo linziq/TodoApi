@@ -50,7 +50,7 @@ namespace TodoListDI.Tests
         }
 
         [Fact] //Put
-        public  void PutItem_ByPrimaryID()
+        public void PutItem_ByPrimaryID()
         {
             var dbContext = GetDbContext();
             dbContext.TodoListItems.Add(new TodoListItem
@@ -66,7 +66,7 @@ namespace TodoListDI.Tests
 
             var method = services.UpdateItemsById(3, new TodoListItem
             {
-           
+
                 AddDate = DateTime.UtcNow,
                 IsDone = true,
                 UserID = 3,
@@ -75,7 +75,6 @@ namespace TodoListDI.Tests
             var actresult = services.GetItemsByUserId(3);
 
             Assert.Equal("string", actresult.ToList()[0].Title);
-
         }
 
         [Fact] // Delect
@@ -84,7 +83,7 @@ namespace TodoListDI.Tests
             var dbContext = GetDbContext();
             dbContext.TodoListItems.Add(new TodoListItem
             {
-                PrimaryID = 4,
+                PrimaryID = 1,
                 AddDate = DateTime.Now,
                 IsDone = false,
                 UserID = 4,
@@ -93,8 +92,8 @@ namespace TodoListDI.Tests
             dbContext.SaveChanges();
             TodoServices services = new TodoServices(dbContext);
 
-            await  services.DeleteItemsByPrimaryID(4);
-            var results = services.GetItemsByUserId(4);
+            await services.DeleteItemsByPrimaryID(1);
+            var results = services.GetItemsByUserId(1);
 
             Assert.Equal(0, results.Count());
         }
@@ -103,7 +102,7 @@ namespace TodoListDI.Tests
         private TodoContext GetDbContext()
         {
             var optins = new DbContextOptionsBuilder<TodoContext>()
-             .UseInMemoryDatabase(databaseName: "Testdb")
+             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
              .Options;
             return new TodoContext(optins);
         }

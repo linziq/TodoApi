@@ -21,12 +21,12 @@
         }
         //   var identity = HttpContext.User.Identity as ClaimsIdentity;
         [HttpGet]
-        public IQueryable<TodoListItem> GetTodoListItems()
+        public IEnumerable<TodoListItem> GetTodoListItems()
         {
             // HttpContext.User.Claims  Claim 是这些声明对象的列表(以list的方式表现)。       Request
-            // int identityID = Convert.ToInt32(User.Claims.ToList()[2].Value); // 对应type =="UserId",但申明通常被认为无序，应该按类型
+            // int ID = Convert.ToInt32(User.Claims.ToList()[2].Value); // 对应type =="UserId",但申明通常被认为无序，应该按类型
             int userId = Convert.ToInt32(User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value); // HttpContext.User
-            var result = (IQueryable<TodoListItem>)_ITodoServices.GetItemsByUserId(userId);
+            var result = _ITodoServices.GetItemsByUserId(userId);
             return result;
         }
 

@@ -16,45 +16,40 @@ namespace TodoApi.Controllers
 
     public class LoginController : ControllerBase
     {
-        private readonly LoginContext loginContext;
+        private readonly LoginContext _loginContext;
         private readonly IConfiguration configuration;
 
         public LoginController(LoginContext loginContext, IConfiguration configuration)
         {
-            this.loginContext = loginContext;
+            _loginContext = loginContext;
             this.configuration = configuration;
         }
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromBody] LoginModel model)
+        public IActionResult Login([FromBody] LoginModel model)
         {
-            List<UserItem> userItem = await this.loginContext.UserItems.ToListAsync();
-
-            foreach (var item in userItem)
+            var list = _loginContext.UserItems.FirstOrDefault(u => u.UserName == model.Username && u.PassWord == model.Password);
+            if (list == null)
             {
-                if (model.Username == item.UserName && model.Password == item.PassWord)
-                {                   
-                    var authClaims = new List<Claim>
-                   {
-                    new Claim(ClaimTypes.Role, item.Permission!.ToString().Trim()),
-                     //new Claim("Role", item.Permission!.ToString().Trim()),
-                    new Claim("UserName",item.UserName!.ToString()),
-                    new Claim("UserId", item.Id.ToString()),
-                   };
-                    var token = GetToken(authClaims);
-                    return Ok(new
-                    {
-                        token = new JwtSecurityTokenHandler().WriteToken(token),
-                        ExpirationTime = token.ValidTo,
-                    });
-                }
+                return BadRequest("账号和密码错误");
             }
 
-            return BadRequest("不存在此用户，或者账号和密码错误");
+            var authClaims = new List<Claim>
+                   {
+                    new Claim(ClaimTypes.Role, list.Permission!.ToString().Trim()),
+                    new Claim("UserName",list.UserName!.ToString()),
+                    new Claim("UserId", list.Id.ToString()),
+                   };
+            var token = GetToken(authClaims);
+            return Ok(new
+            {
+                token = new JwtSecurityTokenHandler().WriteToken(token),
+                ExpirationTime = token.ValidTo,
+            });
         }
 
-        // 拿到token字符串
+        // 拿到token字符串 
         private JwtSecurityToken GetToken(List<Claim> authClaims)
         {
             var authScereKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])); // 登录秘钥从configuration里拿
