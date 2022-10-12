@@ -45,6 +45,7 @@ namespace TodoApi.Services
             toUpdate.AddDate = item.AddDate;
             toUpdate.Title = item.Title;
             toUpdate.IsDone = item.IsDone;
+            toUpdate.Content= item.Content;
 
             await context.SaveChangesAsync();
             return;

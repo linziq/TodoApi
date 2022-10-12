@@ -12,5 +12,7 @@
         }
 
         public DbSet<TodoListItem> TodoListItems { get; set; } = null!; // 可以为空  这里是将todoitem作为一个DbSet表，后面orm框架会自动提交到数据库
+
+        public DbSet<UserItem> UserItems { get; set; } = null!;
     }
 }

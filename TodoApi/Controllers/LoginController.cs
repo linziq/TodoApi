@@ -24,7 +24,6 @@ namespace TodoApi.Controllers
             _loginContext = loginContext;
             this.configuration = configuration;
         }
-
         [HttpPost]
         [Route("login")]
         public IActionResult Login([FromBody] LoginModel model)

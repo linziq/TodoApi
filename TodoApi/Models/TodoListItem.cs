@@ -18,5 +18,7 @@
 
         [JsonIgnore]
         public int? UserID { get; set; }
+
+        public string? Content { get; set; }
     }
 }
