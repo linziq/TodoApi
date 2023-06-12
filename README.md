@@ -3,4 +3,4 @@
 运用技术：.net framework,ASP.NET Core,web api 
 单元测试：Xunit
 内容可以理解为代办事项的小型应用，简单使用增删改查完成内容
-[博客园文章](https://github.com/这里写你GitHub项目的URL](https://www.cnblogs.com/linziqing/articles/todo-list_all.html）
+[博客园文章](https://www.cnblogs.com/linziqing/articles/todo-list_all.html）
